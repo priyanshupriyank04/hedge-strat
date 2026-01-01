@@ -156,6 +156,69 @@ def compute_wilder_rsi_14(close_series):
     return rsi
 
 
+def compute_wilder_atr_14(high_series, low_series, close_series):
+    """
+    Compute Wilder ATR-14 using True Range.
+    
+    True Range = max(
+        high - low,
+        abs(high - close.shift(1)),
+        abs(low - close.shift(1))
+    )
+    
+    For first rows (<14): ATR = mean(TR over available rows)
+    After that: ATR[t] = ((ATR[t-1] * 13) + TR[t]) / 14
+    
+    Parameters:
+    -----------
+    high_series : pandas Series
+        Series of high prices
+    low_series : pandas Series
+        Series of low prices
+    close_series : pandas Series
+        Series of close prices
+    
+    Returns:
+    --------
+    pandas Series : ATR values
+    """
+    prev_close = close_series.shift(1)
+    
+    # Compute True Range
+    tr1 = high_series - low_series
+    tr2 = (high_series - prev_close).abs()
+    tr3 = (low_series - prev_close).abs()
+    
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    
+    # Compute ATR using Wilder smoothing
+    atr = pd.Series(index=high_series.index, dtype=float)
+    
+    for t in range(len(high_series)):
+        if pd.isna(tr.iloc[t]):
+            atr.iloc[t] = np.nan
+        elif t < 14:
+            # For early rows: simple mean of available TR
+            available_tr = tr.iloc[:t+1].dropna()
+            if len(available_tr) > 0:
+                atr.iloc[t] = available_tr.mean()
+            else:
+                atr.iloc[t] = np.nan
+        else:
+            # For rows >= 14: use Wilder smoothing
+            if pd.isna(atr.iloc[t-1]):
+                # Fallback to simple mean if previous ATR is NaN
+                available_tr = tr.iloc[:t+1].dropna()
+                if len(available_tr) > 0:
+                    atr.iloc[t] = available_tr.mean()
+                else:
+                    atr.iloc[t] = np.nan
+            else:
+                atr.iloc[t] = ((atr.iloc[t-1] * 13) + tr.iloc[t]) / 14
+    
+    return atr
+
+
 def normalize_column_names(df):
     """
     Normalize column names to lowercase and handle common variations.
@@ -391,7 +454,70 @@ def process_ohlc_file(input_path, output_path):
         df = df.drop(columns=['down_day'])
     
     # ==================================================
-    # E) INDIA VIX: CLOSE/EMA ratios
+    # A) REALIZED VOLATILITY (ROLLING STD OF RETURNS) - NIFTY ONLY
+    # ==================================================
+    if is_nifty:
+        # Compute simple returns: ret_1 = close / close.shift(1) - 1
+        ret_1 = df['close'] / df['close'].shift(1) - 1
+        
+        # Compute rolling standard deviation with partial windows
+        for window in [5, 10, 20]:
+            df[f'rv_{window}'] = ret_1.rolling(window=window, min_periods=1).std(ddof=1)
+    
+    # ==================================================
+    # B) PARKINSON VOLATILITY (DAILY) - NIFTY ONLY
+    # ==================================================
+    if is_nifty:
+        # parkinson_vol = sqrt( (1 / (4 * ln(2))) * ( ln(high / low) ** 2 ) )
+        constant = 1.0 / (4.0 * np.log(2.0))
+        
+        # Compute ln(high / low) with guards
+        high_low_ratio = np.where(
+            (df['high'] > 0) & (df['low'] > 0) & (df['high'] >= df['low']) & 
+            (df['high'].notna()) & (df['low'].notna()),
+            df['high'] / df['low'],
+            np.nan
+        )
+        
+        log_ratio = np.log(high_low_ratio)
+        df['parkinson_vol'] = np.sqrt(constant * (log_ratio ** 2))
+    
+    # ==================================================
+    # C) ATR (WILDER, PERIOD = 14) - NIFTY ONLY
+    # ==================================================
+    if is_nifty:
+        df['atr_14'] = compute_wilder_atr_14(df['high'], df['low'], df['close'])
+    
+    # ==================================================
+    # D) NORMALIZED ATR - NIFTY ONLY
+    # ==================================================
+    if is_nifty:
+        df['natr_14'] = np.where(
+            (df['close'] > 0) & (df['close'].notna()),
+            df['atr_14'] / df['close'],
+            np.nan
+        )
+    
+    # ==================================================
+    # E) TREND EFFICIENCY (WINDOW = 10) - NIFTY ONLY
+    # ==================================================
+    if is_nifty:
+        # net_move = abs(close - close.shift(10))
+        net_move = (df['close'] - df['close'].shift(10)).abs()
+        
+        # total_move = rolling_sum(abs(close - close.shift(1)), window=10, min_periods=1)
+        daily_move = (df['close'] - df['close'].shift(1)).abs()
+        total_move = daily_move.rolling(window=10, min_periods=1).sum()
+        
+        # trend_efficiency_10 = net_move / total_move
+        df['trend_efficiency_10'] = np.where(
+            (total_move > 0) & (total_move.notna()),
+            net_move / total_move,
+            np.nan
+        )
+    
+    # ==================================================
+    # F) INDIA VIX: CLOSE/EMA ratios
     # ==================================================
     if is_vix:
         for window in [5, 15, 28, 60, 200]:
@@ -403,7 +529,7 @@ def process_ohlc_file(input_path, output_path):
             )
     
     # ==================================================
-    # F) INDIA VIX: EMA SPREADS
+    # G) INDIA VIX: EMA SPREADS
     # ==================================================
     if is_vix:
         ema_spreads = [
@@ -422,12 +548,79 @@ def process_ohlc_file(input_path, output_path):
         for ema1_col, ema2_col, spread_col in ema_spreads:
             df[spread_col] = df[ema1_col] - df[ema2_col]
     
+    # ==================================================
+    # H) INDIA VIX: Vol-regime & Memory Features
+    # ==================================================
+    if is_vix:
+        # 1) ΔVIX (1-day change)
+        df['dvix_1d'] = df['close'] - df['close'].shift(1)
+        
+        # 2) Vol-of-Vol (rolling std of 1D VIX returns)
+        prev_close = df['close'].shift(1)
+        vix_ret_1d = np.where(
+            (prev_close > 0) & (prev_close.notna()),
+            df['close'] / prev_close - 1,
+            np.nan
+        )
+        df['vix_vol_of_vol_20'] = pd.Series(vix_ret_1d, index=df.index).rolling(window=20, min_periods=1).std(ddof=1)
+        
+        # 3) Rolling VIX percentile ranks
+        def compute_percentile_rank(window_values):
+            """Compute percentile rank of last value in window."""
+            window_values = window_values.dropna()
+            if len(window_values) == 0:
+                return np.nan
+            last_val = window_values.iloc[-1]
+            if pd.isna(last_val):
+                return np.nan
+            return (window_values <= last_val).mean()
+        
+        for window in [20, 60, 252]:
+            df[f'vix_pct_{window}'] = df['close'].rolling(window=window, min_periods=1).apply(
+                compute_percentile_rank, raw=False
+            )
+        
+        # 4) Consecutive days VIX above rolling quantile thresholds
+        # Compute rolling thresholds
+        thr_p60 = df['close'].rolling(window=60, min_periods=1).quantile(0.60)
+        thr_p80 = df['close'].rolling(window=60, min_periods=1).quantile(0.80)
+        
+        # Boolean flags
+        above_p60 = df['close'] > thr_p60
+        above_p80 = df['close'] > thr_p80
+        
+        # Compute consecutive run-length counters with loop
+        df['vix_cons_days_above_p60'] = 0
+        df['vix_cons_days_above_p80'] = 0
+        
+        for t in range(len(df)):
+            if t == 0:
+                df.loc[df.index[t], 'vix_cons_days_above_p60'] = 1 if above_p60.iloc[t] else 0
+                df.loc[df.index[t], 'vix_cons_days_above_p80'] = 1 if above_p80.iloc[t] else 0
+            else:
+                if above_p60.iloc[t]:
+                    prev_val = df.loc[df.index[t-1], 'vix_cons_days_above_p60']
+                    df.loc[df.index[t], 'vix_cons_days_above_p60'] = prev_val + 1 if pd.notna(prev_val) else 1
+                else:
+                    df.loc[df.index[t], 'vix_cons_days_above_p60'] = 0
+                
+                if above_p80.iloc[t]:
+                    prev_val = df.loc[df.index[t-1], 'vix_cons_days_above_p80']
+                    df.loc[df.index[t], 'vix_cons_days_above_p80'] = prev_val + 1 if pd.notna(prev_val) else 1
+                else:
+                    df.loc[df.index[t], 'vix_cons_days_above_p80'] = 0
+    
     # Replace +/-inf with NaN for all new columns
     new_cols = []
     if is_nifty:
         new_cols.extend([f'ret_{p}' for p in [5, 28, 60, 200]])
         new_cols.append('gap_ret')
         new_cols.append('rsi_14')
+        new_cols.extend(['rv_5', 'rv_10', 'rv_20'])
+        new_cols.append('parkinson_vol')
+        new_cols.append('atr_14')
+        new_cols.append('natr_14')
+        new_cols.append('trend_efficiency_10')
     elif is_vix:
         new_cols.extend([f'ret_{p}' for p in [5, 28]])
         new_cols.extend([f'close_over_ema_{w}' for w in [5, 15, 28, 60, 200]])
@@ -436,6 +629,11 @@ def process_ohlc_file(input_path, output_path):
             'ema_15_minus_ema_28', 'ema_15_minus_ema_60', 'ema_15_minus_ema_200',
             'ema_28_minus_ema_60', 'ema_28_minus_ema_200',
             'ema_60_minus_ema_200'
+        ])
+        new_cols.extend([
+            'dvix_1d', 'vix_vol_of_vol_20',
+            'vix_pct_20', 'vix_pct_60', 'vix_pct_252',
+            'vix_cons_days_above_p60', 'vix_cons_days_above_p80'
         ])
     
     new_cols.extend(['close_over_highest_20', 'close_over_highest_60'])
@@ -528,6 +726,15 @@ def process_ohlc_file(input_path, output_path):
     if is_nifty:
         nan_counts['down_days_last_10'] = df['down_days_last_10'].isna().sum()
     
+    # Add NaN counts for new volatility and trend features (NIFTY only)
+    if is_nifty:
+        for window in [5, 10, 20]:
+            nan_counts[f'rv_{window}'] = df[f'rv_{window}'].isna().sum()
+        nan_counts['parkinson_vol'] = df['parkinson_vol'].isna().sum()
+        nan_counts['atr_14'] = df['atr_14'].isna().sum()
+        nan_counts['natr_14'] = df['natr_14'].isna().sum()
+        nan_counts['trend_efficiency_10'] = df['trend_efficiency_10'].isna().sum()
+    
     # Add NaN counts for VIX close_over_ema_* columns
     if is_vix:
         for window in [5, 15, 28, 60, 200]:
@@ -544,6 +751,14 @@ def process_ohlc_file(input_path, output_path):
         for col in ema_spread_cols:
             nan_counts[col] = df[col].isna().sum()
     
+    # Add NaN counts for new VIX vol-regime & memory features
+    if is_vix:
+        nan_counts['dvix_1d'] = df['dvix_1d'].isna().sum()
+        nan_counts['vix_vol_of_vol_20'] = df['vix_vol_of_vol_20'].isna().sum()
+        nan_counts['vix_pct_20'] = df['vix_pct_20'].isna().sum()
+        nan_counts['vix_pct_60'] = df['vix_pct_60'].isna().sum()
+        nan_counts['vix_pct_252'] = df['vix_pct_252'].isna().sum()
+    
     # Min/max for hl_norm columns (excluding NaNs)
     hl_norm_stats = {}
     for col in hl_norm_cols:
@@ -559,12 +774,57 @@ def process_ohlc_file(input_path, output_path):
                 'max': np.nan
             }
     
+    # Min/max for trend_efficiency_10 (NIFTY only, excluding NaNs)
+    trend_efficiency_stats = None
+    if is_nifty:
+        col_data = df['trend_efficiency_10'].dropna()
+        if len(col_data) > 0:
+            trend_efficiency_stats = {
+                'min': col_data.min(),
+                'max': col_data.max()
+            }
+        else:
+            trend_efficiency_stats = {
+                'min': np.nan,
+                'max': np.nan
+            }
+    
+    # Min/max for vix_pct columns and max for consecutive days (VIX only)
+    vix_pct_stats = None
+    vix_cons_days_stats = None
+    if is_vix:
+        # Min/max for vix_pct columns
+        vix_pct_stats = {}
+        for window in [20, 60, 252]:
+            col_data = df[f'vix_pct_{window}'].dropna()
+            if len(col_data) > 0:
+                vix_pct_stats[f'vix_pct_{window}'] = {
+                    'min': col_data.min(),
+                    'max': col_data.max()
+                }
+            else:
+                vix_pct_stats[f'vix_pct_{window}'] = {
+                    'min': np.nan,
+                    'max': np.nan
+                }
+        
+        # Max values for consecutive days counters
+        cons_p60_data = df['vix_cons_days_above_p60'].dropna()
+        cons_p80_data = df['vix_cons_days_above_p80'].dropna()
+        vix_cons_days_stats = {
+            'vix_cons_days_above_p60_max': cons_p60_data.max() if len(cons_p60_data) > 0 else np.nan,
+            'vix_cons_days_above_p80_max': cons_p80_data.max() if len(cons_p80_data) > 0 else np.nan
+        }
+    
     summary = {
         'date_range': (df['date'].min(), df['date'].max()),
         'row_count': len(df),
         'nan_counts': nan_counts,
         'ohlc_sanity_fail_count': df['ohlc_sanity_fail'].sum(),
-        'hl_norm_stats': hl_norm_stats
+        'hl_norm_stats': hl_norm_stats,
+        'trend_efficiency_stats': trend_efficiency_stats,
+        'vix_pct_stats': vix_pct_stats,
+        'vix_cons_days_stats': vix_cons_days_stats
     }
     
     return summary, df
@@ -588,6 +848,58 @@ def print_summary(file_name, summary):
             print(f"  {col}: min={min_val:.4f}, max={max_val:.4f}")
         else:
             print(f"  {col}: min=NaN, max=NaN")
+    
+    # Print NaN counts for new volatility and trend features (NIFTY only)
+    if file_name.upper() == 'NIFTY' and summary.get('trend_efficiency_stats') is not None:
+        print(f"\nNaN counts for new volatility and trend features:")
+        for col in ['rv_5', 'rv_10', 'rv_20', 'parkinson_vol', 'atr_14', 'natr_14', 'trend_efficiency_10']:
+            if col in summary['nan_counts']:
+                print(f"  {col}: {summary['nan_counts'][col]}")
+        
+        # Print min/max for trend_efficiency_10
+        print(f"\nMin/Max for trend_efficiency_10 (excluding NaNs):")
+        trend_stats = summary['trend_efficiency_stats']
+        min_val = trend_stats['min']
+        max_val = trend_stats['max']
+        if pd.notna(min_val) and pd.notna(max_val):
+            print(f"  trend_efficiency_10: min={min_val:.4f}, max={max_val:.4f}")
+        else:
+            print(f"  trend_efficiency_10: min=NaN, max=NaN")
+    
+    # Print NaN counts and statistics for new VIX vol-regime & memory features (VIX only)
+    if file_name.upper() == 'VIX' and summary.get('vix_pct_stats') is not None:
+        print(f"\nNaN counts for new VIX vol-regime & memory features:")
+        for col in ['dvix_1d', 'vix_vol_of_vol_20', 'vix_pct_20', 'vix_pct_60', 'vix_pct_252']:
+            if col in summary['nan_counts']:
+                print(f"  {col}: {summary['nan_counts'][col]}")
+        
+        # Print min/max for vix_pct columns
+        print(f"\nMin/Max for vix_pct columns (excluding NaNs):")
+        vix_pct_stats = summary['vix_pct_stats']
+        for col in ['vix_pct_20', 'vix_pct_60', 'vix_pct_252']:
+            if col in vix_pct_stats:
+                stats = vix_pct_stats[col]
+                min_val = stats['min']
+                max_val = stats['max']
+                if pd.notna(min_val) and pd.notna(max_val):
+                    print(f"  {col}: min={min_val:.4f}, max={max_val:.4f}")
+                else:
+                    print(f"  {col}: min=NaN, max=NaN")
+        
+        # Print max values for consecutive days counters
+        print(f"\nMax values for consecutive days counters (excluding NaNs):")
+        cons_stats = summary['vix_cons_days_stats']
+        max_p60 = cons_stats['vix_cons_days_above_p60_max']
+        max_p80 = cons_stats['vix_cons_days_above_p80_max']
+        if pd.notna(max_p60):
+            print(f"  vix_cons_days_above_p60: max={max_p60:.0f}")
+        else:
+            print(f"  vix_cons_days_above_p60: max=NaN")
+        if pd.notna(max_p80):
+            print(f"  vix_cons_days_above_p80: max={max_p80:.0f}")
+        else:
+            print(f"  vix_cons_days_above_p80: max=NaN")
+    
     print(f"\nOHLC sanity failures: {summary['ohlc_sanity_fail_count']}")
     print(f"{'='*60}")
 
