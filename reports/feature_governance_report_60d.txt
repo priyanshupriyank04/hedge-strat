@@ -1,0 +1,593 @@
+================================================================================
+FEATURE GOVERNANCE REPORT
+================================================================================
+
+Generated: 2026-01-05 14:05:04
+Total features analyzed: 59
+
+================================================================================
+
+
+================================================================================
+CATEGORY: CONTRACT_MICROSTRUCTURE
+================================================================================
+
+--------------------------------------------------------------------------------
+Feature: turnover
+Category: contract_microstructure
+NaN % (overall): 100.0000
+NaN % (when has_valid_ohlc): 100.0000
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: volume
+Category: contract_microstructure
+NaN % (overall): 100.0000
+NaN % (when has_valid_ohlc): 100.0000
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: pcr_volume
+Category: contract_microstructure
+NaN % (overall): 100.0000
+NaN % (when has_valid_ohlc): 100.0000
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: delta_pcr_volume
+Category: contract_microstructure
+NaN % (overall): 100.0000
+NaN % (when has_valid_ohlc): 100.0000
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: no_of_contracts
+Category: contract_microstructure
+NaN % (overall): 60.7631
+NaN % (when has_valid_ohlc): 60.7631
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: oi
+Category: contract_microstructure
+NaN % (overall): 50.5593
+NaN % (when has_valid_ohlc): 50.5593
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: oi_atm_pct_1
+Category: contract_microstructure
+NaN % (overall): 36.1367
+NaN % (when has_valid_ohlc): 36.1367
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: oi_atm_pct_2
+Category: contract_microstructure
+NaN % (overall): 36.1367
+NaN % (when has_valid_ohlc): 36.1367
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: oi_atm_pct_3
+Category: contract_microstructure
+NaN % (overall): 36.1367
+NaN % (when has_valid_ohlc): 36.1367
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: pcr_oi
+Category: contract_microstructure
+NaN % (overall): 6.2833
+NaN % (when has_valid_ohlc): 6.2833
+Keep for Regime: Y
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+
+================================================================================
+CATEGORY: IDENTIFIER_OR_METADATA
+================================================================================
+
+--------------------------------------------------------------------------------
+Feature: volume_weighted_strike_dispersion
+Category: identifier_or_metadata
+NaN % (overall): 100.0000
+NaN % (when has_valid_ohlc): 100.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: underlying_value
+Category: identifier_or_metadata
+NaN % (overall): 33.1220
+NaN % (when has_valid_ohlc): 33.1220
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_strike_x
+Category: identifier_or_metadata
+NaN % (overall): 32.9028
+NaN % (when has_valid_ohlc): 32.9028
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_strike_y
+Category: identifier_or_metadata
+NaN % (overall): 32.9028
+NaN % (when has_valid_ohlc): 32.9028
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_strike
+Category: identifier_or_metadata
+NaN % (overall): 32.9028
+NaN % (when has_valid_ohlc): 32.9028
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: strike_entropy
+Category: identifier_or_metadata
+NaN % (overall): 4.7548
+NaN % (when has_valid_ohlc): 4.7548
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: front_expiry_oi_share
+Category: identifier_or_metadata
+NaN % (overall): 0.1487
+NaN % (when has_valid_ohlc): 0.1487
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: symbol
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: date
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: expiry
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: option_type
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: strike
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: source_file
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: is_liquid
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: dte_days
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: is_tradable_30d
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: traded_strikes_count
+Category: identifier_or_metadata
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+
+================================================================================
+CATEGORY: PRICE_DERIVED
+================================================================================
+
+--------------------------------------------------------------------------------
+Feature: open
+Category: price_derived
+NaN % (overall): 60.7631
+NaN % (when has_valid_ohlc): 60.7631
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: high
+Category: price_derived
+NaN % (overall): 60.7631
+NaN % (when has_valid_ohlc): 60.7631
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: low
+Category: price_derived
+NaN % (overall): 60.7631
+NaN % (when has_valid_ohlc): 60.7631
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: ltp
+Category: price_derived
+NaN % (overall): 49.5454
+NaN % (when has_valid_ohlc): 49.5454
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_straddle_price_x
+Category: price_derived
+NaN % (overall): 32.9340
+NaN % (when has_valid_ohlc): 32.9340
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_straddle_price_y
+Category: price_derived
+NaN % (overall): 32.9340
+NaN % (when has_valid_ohlc): 32.9340
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_straddle_price
+Category: price_derived
+NaN % (overall): 32.9340
+NaN % (when has_valid_ohlc): 32.9340
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: settle_price
+Category: price_derived
+NaN % (overall): 3.9251
+NaN % (when has_valid_ohlc): 3.9251
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: close
+Category: price_derived
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: N
+Keep for Feature: Y
+--------------------------------------------------------------------------------
+
+
+================================================================================
+CATEGORY: SURFACE_SMILE_ATM
+================================================================================
+
+--------------------------------------------------------------------------------
+Feature: iv
+Category: surface_smile_atm
+NaN % (overall): 49.2330
+NaN % (when has_valid_ohlc): 49.2330
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: delta
+Category: surface_smile_atm
+NaN % (overall): 49.2330
+NaN % (when has_valid_ohlc): 49.2330
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_call_25d_x
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: skew_25d_x
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_ratio_25d_x
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: smile_curvature_25d_x
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_call_25d_y
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: skew_25d_y
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_ratio_25d_y
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: smile_curvature_25d_y
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_call_25d
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: skew_25d
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_ratio_25d
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: smile_curvature_25d
+Category: surface_smile_atm
+NaN % (overall): 34.4432
+NaN % (when has_valid_ohlc): 34.4432
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_put_25d_x
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_iv_x
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_put_25d_y
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_iv_y
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: iv_put_25d
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_iv
+Category: surface_smile_atm
+NaN % (overall): 34.0774
+NaN % (when has_valid_ohlc): 34.0774
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_pair_missing_x
+Category: surface_smile_atm
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_pair_missing_y
+Category: surface_smile_atm
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Feature: atm_pair_missing
+Category: surface_smile_atm
+NaN % (overall): 0.0000
+NaN % (when has_valid_ohlc): 0.0000
+Keep for Regime: Y
+Keep for Feature: N
+--------------------------------------------------------------------------------
+
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+
+contract_microstructure:
+  Features: 10
+  Avg NaN % (overall): 62.6016
+  Avg NaN % (valid OHLC): 62.6016
+  Keep for Regime: 10
+  Keep for Feature: 10
+
+identifier_or_metadata:
+  Features: 17
+  Avg NaN % (overall): 13.9255
+  Avg NaN % (valid OHLC): 13.9255
+  Keep for Regime: 0
+  Keep for Feature: 0
+
+price_derived:
+  Features: 9
+  Avg NaN % (overall): 37.1735
+  Avg NaN % (valid OHLC): 37.1735
+  Keep for Regime: 0
+  Keep for Feature: 9
+
+surface_smile_atm:
+  Features: 23
+  Avg NaN % (overall): 31.1413
+  Avg NaN % (valid OHLC): 31.1413
+  Keep for Regime: 23
+  Keep for Feature: 0
+
